@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Smart News</string>
+    <string name="news">News</string>
+    <string name="article_details">Article Details</string>
+    <string name="summary_ai_generated">Summary (AI Generated)</string>
+    <string name="loading">Loading …</string>
+    <string name="generating">Generating …</string>
+    <string name="refresh">Refresh</string>
+</resources>
