@@ -1,4 +1,4 @@
-package io.github.realmazharhussain.smartnews.ui.common
+package io.github.realmazharhussain.smartnews.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -23,10 +23,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.realmazharhussain.smartnews.R
+import io.github.realmazharhussain.smartnews.network.dto.Article
 import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 
 @Composable
-fun NewsItem(modifier: Modifier = Modifier) {
+fun NewsItem(article: Article, modifier: Modifier = Modifier) {
     Card(
         onClick = {},
         modifier = modifier,
@@ -49,13 +50,21 @@ fun NewsItem(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.heightIn(60.dp)
             ) {
                 Column(verticalArrangement = Arrangement.Top) {
-                    Text(text = "News Article Title", style = MaterialTheme.typography.titleSmall)
                     Text(
-                        text = "Source Company - Writer", style = MaterialTheme.typography.bodySmall
+                        text = article.title,
+                        style = MaterialTheme.typography.titleSmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        text = if (article.author.isNullOrBlank()) article.source.name else "${article.author} - ${article.source.name}",
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
                 Text(
-                    text = "Summary and description of the news article",
+                    text = article.description,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium
@@ -65,10 +74,10 @@ fun NewsItem(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun NewsItemPreview() {
     SmartNewsTheme {
-        NewsItem()
+        NewsItem(Article.mock())
     }
 }

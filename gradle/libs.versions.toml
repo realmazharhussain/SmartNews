@@ -7,10 +7,12 @@ junitVersion = "1.2.1"
 ksp = "2.0.0-1.0.21"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.3"
+moshi = "1.15.1"
 activityCompose = "1.9.0"
 composeBom = "2024.06.00"
 hiltAndroid = "2.51.1"
 hiltCompiler = "1.2.0"
+retrofit = "2.11.0"
 secrets = "2.0.1"
 
 [libraries]
@@ -33,11 +35,17 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltCompiler" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
+moshi-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
+
+[bundles]
+retrofit = ["retrofit", "retrofit-converter-moshi"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

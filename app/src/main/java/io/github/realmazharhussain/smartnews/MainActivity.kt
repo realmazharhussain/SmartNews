@@ -4,51 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import io.github.realmazharhussain.smartnews.ui.common.NewsItem
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import dagger.hilt.android.AndroidEntryPoint
+import io.github.realmazharhussain.smartnews.common.TaskState
+import io.github.realmazharhussain.smartnews.ui.NewsScreen
+import io.github.realmazharhussain.smartnews.ui.NewsViewModel
 import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
+    private val newsViewModel: NewsViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SmartNewsTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        TopAppBar(
-                            title = {
-                                Text(text = "News")
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-                        )
-                    }
-                ) { innerPadding ->
-                    LazyColumn(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(innerPadding),
-                        contentPadding = PaddingValues(vertical = 4.dp)
-                    ) {
-                        items(100) {
-                            NewsItem()
-                        }
-                    }
-                }
+                val state by newsViewModel.everything.collectAsState(TaskState.Ongoing())
+                NewsScreen(state)
             }
         }
     }
