@@ -1,4 +1,4 @@
-package io.github.realmazharhussain.smartnews.ui
+package io.github.realmazharhussain.smartnews.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

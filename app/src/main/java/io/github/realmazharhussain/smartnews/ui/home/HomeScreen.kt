@@ -1,4 +1,4 @@
-package io.github.realmazharhussain.smartnews.ui
+package io.github.realmazharhussain.smartnews.ui.home
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,11 +11,12 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import io.github.realmazharhussain.smartnews.extension.repeat
 import io.github.realmazharhussain.smartnews.network.dto.Article
+import io.github.realmazharhussain.smartnews.ui.common.SmartNewsTopBar
 import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun NewsScreen(items: LazyPagingItems<Article>, modifier: Modifier = Modifier) {
+fun HomeScreen(items: LazyPagingItems<Article>, modifier: Modifier = Modifier) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { SmartNewsTopBar() }
@@ -26,8 +27,8 @@ fun NewsScreen(items: LazyPagingItems<Article>, modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun NewsScreenPreview() {
+private fun HomeScreenPreview() {
     SmartNewsTheme {
-        NewsScreen(flowOf(PagingData.from(Article.mock().repeat(20))).collectAsLazyPagingItems())
+        HomeScreen(flowOf(PagingData.from(Article.mock().repeat(20))).collectAsLazyPagingItems())
     }
 }

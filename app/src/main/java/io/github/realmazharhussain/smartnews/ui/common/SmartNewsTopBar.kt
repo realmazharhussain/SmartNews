@@ -1,4 +1,4 @@
-package io.github.realmazharhussain.smartnews.ui
+package io.github.realmazharhussain.smartnews.ui.common
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme

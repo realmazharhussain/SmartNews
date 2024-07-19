@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.paging.compose.collectAsLazyPagingItems
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.realmazharhussain.smartnews.ui.NewsScreen
-import io.github.realmazharhussain.smartnews.ui.NewsViewModel
+import io.github.realmazharhussain.smartnews.ui.home.HomeScreen
+import io.github.realmazharhussain.smartnews.ui.home.NewsViewModel
 import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 
 @AndroidEntryPoint
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SmartNewsTheme {
-                NewsScreen(newsViewModel.everything.collectAsLazyPagingItems())
+                HomeScreen(newsViewModel.everything.collectAsLazyPagingItems())
             }
         }
     }

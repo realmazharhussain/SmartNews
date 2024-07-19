@@ -1,4 +1,4 @@
-package io.github.realmazharhussain.smartnews.ui
+package io.github.realmazharhussain.smartnews.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
