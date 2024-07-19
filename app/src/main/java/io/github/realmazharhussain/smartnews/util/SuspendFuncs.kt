@@ -1,6 +1,5 @@
 package io.github.realmazharhussain.smartnews.util
 
-import io.github.realmazharhussain.smartnews.common.Result
 import io.github.realmazharhussain.smartnews.common.TaskState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -10,15 +9,15 @@ import kotlinx.coroutines.flow.stateIn
 
 @Suppress("unused")
 fun <T> getResult(block: () -> T) = try {
-    Result.Success(block())
+    TaskState.Success(block())
 } catch (t: Throwable) {
-    Result.Failure(t)
+    TaskState.Failure(t)
 }
 
 suspend fun <T> getResultAsync(block: suspend () -> T) = try {
-    Result.Success(block())
+    TaskState.Success(block())
 } catch (t: InternalError) {
-    Result.Failure(t)
+    TaskState.Failure(t)
 }
 
 /** Execute [block] and return a [StateFlow] of [block]'s execution state */
@@ -29,6 +28,5 @@ fun <T> flowState(
     block: suspend () -> T
 ) = flow {
     val result = getResultAsync(block)
-    val state = TaskState.Completed(result)
-    emit(state)
-}.stateIn(scope, started, TaskState.Ongoing())
+    emit(result)
+}.stateIn(scope, started, TaskState.Loading())

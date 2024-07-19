@@ -2,15 +2,18 @@ package io.github.realmazharhussain.smartnews.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import androidx.paging.filter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.realmazharhussain.smartnews.network.repository.NewsRepository
-import io.github.realmazharhussain.smartnews.util.flowState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,6 +21,15 @@ import javax.inject.Inject
 class NewsViewModel @Inject constructor(private val repository: NewsRepository) : ViewModel() {
     @Suppress("MemberVisibilityCanBePrivate")
     val query = MutableStateFlow("technology")
-    val everything = query.debounce(1000).flatMapLatest { fetchEverything(it) }
-    private fun fetchEverything(query: String, pageNo: Int = 1) = flowState(viewModelScope, SharingStarted.Lazily) { repository.everything(query, pageNo) }
+    val everything = query.debounce(1000).flatMapLatest {
+        Pager(
+            PagingConfig(20)
+        ) {
+            NewsPagingSource(repository, it)
+        }.flow.map { pagingData ->
+            pagingData.filter { article ->
+                article.title != "[Removed]"
+            }
+        }
+    }.cachedIn(viewModelScope)
 }
