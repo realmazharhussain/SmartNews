@@ -10,18 +10,18 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import io.github.realmazharhussain.smartnews.extension.repeat
-import io.github.realmazharhussain.smartnews.network.dto.Article
+import io.github.realmazharhussain.smartnews.data.network.dto.Article
 import io.github.realmazharhussain.smartnews.ui.common.LazyItemsColumn
 import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun NewsList(items: LazyPagingItems<Article>, modifier: Modifier = Modifier) {
+fun NewsList(items: LazyPagingItems<Article>, onArticleClicked: (Article) -> Unit, modifier: Modifier = Modifier) {
     LazyItemsColumn(
         items = items,
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 4.dp),
-        itemContent = { NewsItem(it) },
+        itemContent = { NewsItem(it, onClick = { onArticleClicked(it) }) },
     )
 }
 
@@ -29,6 +29,6 @@ fun NewsList(items: LazyPagingItems<Article>, modifier: Modifier = Modifier) {
 @Composable
 private fun NewsListPreview() {
     SmartNewsTheme {
-        NewsList(flowOf(PagingData.from(Article.mock().repeat(20))).collectAsLazyPagingItems())
+        NewsList(flowOf(PagingData.from(Article.mock().repeat(20))).collectAsLazyPagingItems(), onArticleClicked = {})
     }
 }

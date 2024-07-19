@@ -16,7 +16,7 @@ fun <T> getResult(block: () -> T) = try {
 
 suspend fun <T> getResultAsync(block: suspend () -> T) = try {
     TaskState.Success(block())
-} catch (t: InternalError) {
+} catch (t: Throwable) {
     TaskState.Failure(t)
 }
 

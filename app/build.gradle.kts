@@ -4,12 +4,19 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     alias(libs.plugins.secrets)
+    alias(libs.plugins.serialization)
 }
 
 secrets {
     propertiesFileName = "secrets.properties"
     defaultPropertiesFileName = "secrets.defaults.properties"
+}
+
+room {
+    val schemasDirectory = layout.buildDirectory.dir("schemas")
+    schemaDirectory(schemasDirectory.get().asFile.path)
 }
 
 android {
@@ -61,12 +68,16 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.browser)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation)
     implementation(libs.androidx.paging)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
@@ -74,7 +85,9 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.hilt.android)
     implementation(libs.moshi)
+    implementation(libs.serialization.json)
     ksp(libs.androidx.hilt.compiler)
+    ksp(libs.androidx.room.compiler)
     ksp(libs.hilt.android.compiler)
     ksp(libs.moshi.codegen)
     testImplementation(libs.junit)

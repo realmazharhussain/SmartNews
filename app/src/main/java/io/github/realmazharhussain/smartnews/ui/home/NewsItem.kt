@@ -26,13 +26,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import io.github.realmazharhussain.smartnews.network.dto.Article
+import io.github.realmazharhussain.smartnews.data.network.dto.Article
 import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 
 @Composable
-fun NewsItem(article: Article, modifier: Modifier = Modifier) {
+fun NewsItem(article: Article, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Card(
-        onClick = {},
+        onClick = onClick,
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -85,6 +85,6 @@ fun NewsItem(article: Article, modifier: Modifier = Modifier) {
 @Composable
 private fun NewsItemPreview() {
     SmartNewsTheme {
-        NewsItem(Article.mock())
+        NewsItem(Article.mock(), onClick = {})
     }
 }

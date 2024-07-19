@@ -1,10 +1,10 @@
-package io.github.realmazharhussain.smartnews.network.repository
+package io.github.realmazharhussain.smartnews.data.network.repository
 
 import io.github.realmazharhussain.smartnews.BuildConfig
-import io.github.realmazharhussain.smartnews.network.service.NewsService
+import io.github.realmazharhussain.smartnews.data.network.service.NewsService
 import javax.inject.Inject
 
-class NewsRepository @Inject constructor(private val service: NewsService) {
+class NewsRepositoryRemote @Inject constructor(private val service: NewsService) {
     @Suppress("MemberVisibilityCanBePrivate")
     var apiKey = BuildConfig.NEWS_API_KEY
     @Suppress("MemberVisibilityCanBePrivate")

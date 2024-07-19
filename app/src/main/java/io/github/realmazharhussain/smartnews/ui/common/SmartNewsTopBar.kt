@@ -14,9 +14,9 @@ import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun SmartNewsTopBar(modifier: Modifier = Modifier) {
+fun SmartNewsTopBar(title: String, modifier: Modifier = Modifier) {
     TopAppBar(
-        title = { Text(text = stringResource(R.string.news)) },
+        title = { Text(text = title) },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         modifier = modifier
     )
@@ -26,6 +26,6 @@ fun SmartNewsTopBar(modifier: Modifier = Modifier) {
 @Composable
 private fun SmartNewsTopBarPreview() {
     SmartNewsTheme {
-        SmartNewsTopBar()
+        SmartNewsTopBar(stringResource(id = R.string.app_name))
     }
 }

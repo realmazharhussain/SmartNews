@@ -1,9 +1,11 @@
-package io.github.realmazharhussain.smartnews.network.dto
+package io.github.realmazharhussain.smartnews.data.network.dto
 
+import androidx.navigation.NavType
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.ToJson
+import kotlinx.serialization.Serializable
 
 @JsonClass(generateAdapter = true)
 data class NewsRspJson (
@@ -32,6 +34,7 @@ sealed interface NewsRsp {
 }
 
 @JsonClass(generateAdapter = true)
+@Serializable
 data class Article (
     val source: Source,
     val author: String?,
@@ -41,7 +44,7 @@ data class Article (
     val urlToImage: String?,
     val publishedAt: String,
     val content: String
-) {
+): java.io.Serializable {
     companion object {
         fun mock() = Article(
             source = Source.mock(),
@@ -57,11 +60,13 @@ data class Article (
 }
 
 @JsonClass(generateAdapter = true)
+@Serializable
 data class Source (
     val id: String?,
     val name: String
 ) {
     companion object {
+        val Unknown = Source(id = null, name = "Unknown")
         fun mock() = Source(id = "io.github.realmazharhussain.blog", name = "Mazhar's Blog")
     }
 }
