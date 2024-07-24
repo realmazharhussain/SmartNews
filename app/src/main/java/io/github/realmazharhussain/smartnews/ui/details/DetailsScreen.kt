@@ -2,6 +2,7 @@ package io.github.realmazharhussain.smartnews.ui.details
 
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,24 +37,31 @@ import coil.compose.AsyncImage
 import io.github.realmazharhussain.smartnews.R
 import io.github.realmazharhussain.smartnews.common.TaskState
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
-import io.github.realmazharhussain.smartnews.ui.common.Screen
-import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
+import io.github.realmazharhussain.smartnews.extension.ui.sharedElement
+import io.github.realmazharhussain.smartnews.ui.common.SharedAnimationPreview
 import retrofit2.HttpException
 import kotlin.random.Random
 import kotlin.random.nextInt
 
 @Composable
-fun DetailsScreen(details: TaskState<Article>, summary: TaskState<String>, modifier: Modifier = Modifier) {
-    Screen(title = stringResource(R.string.article_details), modifier) {
+fun DetailsScreen(
+    details: TaskState<Article>,
+    summary: TaskState<String>,
+    modifier: Modifier = Modifier
+) {
+    Scaffold(modifier) { innerPadding ->
         if (details !is TaskState.Success) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding), contentAlignment = Alignment.Center) { Text(
                 when(details) {
                     is TaskState.Loading -> stringResource(R.string.loading)
                     is TaskState.Failure -> "Error Occurred: ${details.cause}"
                     else -> "Internal Error"
                 }
             ) }
-            return@Screen
+            return@Scaffold
         }
 
         val article = details.data
@@ -63,6 +72,7 @@ fun DetailsScreen(details: TaskState<Article>, summary: TaskState<String>, modif
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
+                .padding(innerPadding)
         ) {
             AsyncImage(
                 model = article.urlToImage,
@@ -71,6 +81,7 @@ fun DetailsScreen(details: TaskState<Article>, summary: TaskState<String>, modif
                 placeholder = painterResource(R.drawable.downloading_16x9),
                 error = rememberVectorPainter(Icons.Default.BrokenImage),
                 modifier = Modifier
+                    .sharedElement("image-${article.id}")
                     .fillMaxWidth()
                     .animateContentSize()
             )
@@ -83,38 +94,46 @@ fun DetailsScreen(details: TaskState<Article>, summary: TaskState<String>, modif
                     .padding(4.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(
-                    text = article.title,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Text(
-                    text = "${article.author?.plus(" - ") ?: ""}${article.source.name}",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(0.dp))
-                Text(
-                    text = article.content,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Button(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    onClick = {
-                        val intent = CustomTabsIntent.Builder().build()
-                        intent.launchUrl(context, Uri.parse(article.url))
-                    },
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Read Full Article")
+                    Text(
+                        text = article.title,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.sharedElement("title-${article.id}"),
+                    )
+
+                    Text(
+                        text = "${article.author?.plus(" - ") ?: ""}${article.source.name}",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.sharedElement("source-${article.id}"),
+                    )
+
+                    Spacer(modifier = Modifier.height(0.dp))
+                    Text(
+                        text = article.content,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Button(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        onClick = {
+                            val intent = CustomTabsIntent.Builder().build()
+                            intent.launchUrl(context, Uri.parse(article.url))
+                        },
+                    ) {
+                        Text("Read Full Article")
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -164,7 +183,8 @@ fun DetailsScreen(details: TaskState<Article>, summary: TaskState<String>, modif
 @Preview
 @Composable
 private fun DetailsScreenPreview() {
-    SmartNewsTheme {
+    @OptIn(ExperimentalSharedTransitionApi::class)
+    SharedAnimationPreview {
         DetailsScreen(TaskState.Success(Article.mock()), TaskState.Success(randomText()))
     }
 }

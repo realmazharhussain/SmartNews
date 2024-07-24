@@ -28,16 +28,16 @@ class NewsRepositoryLocal @Inject constructor(
         articleCacheDao.add(article.toEntity(sourceId))
     }
 
-    suspend fun remove(url: String) {
-        articleCacheDao.remove(url)
+    suspend fun remove(id: Int) {
+        articleCacheDao.remove(id)
 
-        val sourceId = articleCacheDao.getSourceId(url)
+        val sourceId = articleCacheDao.getSourceId(id)
         if (sourceId != null && !articleCacheDao.existForSource(sourceId)) {
             articleSourceDao.remove(sourceId)
         }
     }
 
-    suspend fun get(url: String): Article? = articleCacheDao.find(url)?.let {
+    suspend fun get(id: Int): Article? = articleCacheDao.find(id)?.let {
         it.toArticle(source = articleSourceDao.find(it.sourceId)?.toSource() ?: Source.Unknown)
     }
 
@@ -62,8 +62,8 @@ class NewsRepositoryLocal @Inject constructor(
         }
     }
 
-    private fun Article.toEntity(sourceId: Long) = ArticleCache(sourceId, author, title, description, url, urlToImage, publishedAt, content)
-    private fun ArticleCache.toArticle(source: Source) = Article(source, author, title, description, url, urlToImage, publishedAt, content)
+    private fun Article.toEntity(sourceId: Long) = ArticleCache(sourceId, author, title, description, url, urlToImage, publishedAt, content, id)
+    private fun ArticleCache.toArticle(source: Source) = Article(source, author, title, description, url, urlToImage, publishedAt, content, id)
 
     private fun Source.toEntity() = ArticleSource(id, name)
     private fun ArticleSource.toSource() = Source(id, name)

@@ -10,13 +10,14 @@ import androidx.room.PrimaryKey
         ArticleSource::class, childColumns = ["source_id"], parentColumns = ["auto_id"]
     )]
 )
-data class ArticleCache (
+data class ArticleCache(
     @ColumnInfo(name = "source_id", index = true) val sourceId: Long,
     @ColumnInfo(name = "author") val author: String?,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "description") val description: String?,
-    @ColumnInfo(name = "url") @PrimaryKey val url: String,
+    @ColumnInfo(name = "url") val url: String,
     @ColumnInfo(name = "url_to_image") val urlToImage: String?,
     @ColumnInfo(name = "published_at") val publishedAt: String,
-    @ColumnInfo(name = "content") val content: String
+    @ColumnInfo(name = "content") val content: String,
+    @ColumnInfo(name = "id") @PrimaryKey val id: Int,
 )

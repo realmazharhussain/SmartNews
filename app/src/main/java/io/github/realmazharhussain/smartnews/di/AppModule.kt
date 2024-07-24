@@ -35,7 +35,7 @@ object AppModule {
         .build().create(SummaryService::class.java)
 
     @Provides fun providesCacheDatabase(@ApplicationContext context: Context): CacheDatabase =
-        Room.databaseBuilder(context, CacheDatabase::class.java, "cache_database").build()
+        Room.databaseBuilder(context, CacheDatabase::class.java, "cache_database").fallbackToDestructiveMigration().build()
 
     @Provides fun providesArticleCacheDao(db: CacheDatabase): ArticleCacheDao = db.articleCacheDao()
     @Provides fun providesArticleSourceDao(db: CacheDatabase): ArticleSourceDao = db.articleSourceDao()

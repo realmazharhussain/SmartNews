@@ -1,6 +1,5 @@
 package io.github.realmazharhussain.smartnews.data.network.dto
 
-import androidx.navigation.NavType
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -43,8 +42,11 @@ data class Article (
     val url: String,
     val urlToImage: String?,
     val publishedAt: String,
-    val content: String
-): java.io.Serializable {
+    val content: String,
+
+    @Json(ignore = true)
+    val id: Int = url.hashCode()
+) {
     companion object {
         fun mock() = Article(
             source = Source.mock(),

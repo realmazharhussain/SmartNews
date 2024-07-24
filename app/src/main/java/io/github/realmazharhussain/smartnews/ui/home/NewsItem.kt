@@ -1,10 +1,12 @@
 package io.github.realmazharhussain.smartnews.ui.home
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,10 +29,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
-import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
+import io.github.realmazharhussain.smartnews.extension.ui.sharedElement
+import io.github.realmazharhussain.smartnews.ui.common.SharedAnimationPreview
 
 @Composable
-fun NewsItem(article: Article, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun NewsItem(
+    article: Article,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         onClick = onClick,
         modifier = modifier,
@@ -41,7 +48,6 @@ fun NewsItem(article: Article, onClick: () -> Unit, modifier: Modifier = Modifie
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-
             AsyncImage(
                 model = article.urlToImage,
                 contentDescription = null,
@@ -49,42 +55,40 @@ fun NewsItem(article: Article, onClick: () -> Unit, modifier: Modifier = Modifie
                 error = rememberVectorPainter(Icons.Default.BrokenImage),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
+                    .sharedElement("image-${article.id}")
                     .clip(RoundedCornerShape(12))
                     .size(60.dp)
             )
             Spacer(Modifier.width(8.dp))
             Column(
-                verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.heightIn(60.dp)
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.heightIn(60.dp)
             ) {
-                Column(verticalArrangement = Arrangement.Top) {
-                    Text(
-                        text = article.title,
-                        style = MaterialTheme.typography.titleSmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        text = if (article.author.isNullOrBlank()) article.source.name else "${article.author} - ${article.source.name}",
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
                 Text(
-                    text = article.description ?: "",
+                    text = article.title,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.sharedElement("title-${article.id}"),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = if (article.author.isNullOrBlank()) article.source.name else "${article.author} - ${article.source.name}",
+                    style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium
+                    modifier = Modifier.sharedElement("source-${article.id}"),
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun NewsItemPreview() {
-    SmartNewsTheme {
+    SharedAnimationPreview {
         NewsItem(Article.mock(), onClick = {})
     }
 }

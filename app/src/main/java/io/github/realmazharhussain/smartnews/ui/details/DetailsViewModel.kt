@@ -13,8 +13,9 @@ class DetailsViewModel @Inject constructor(
     private val newsRepositoryLocal: NewsRepositoryLocal,
     private val summaryRepository: SummaryRepository
 ) : ViewModel() {
-    fun getDetails(url: String) = flowState(viewModelScope) {
-        newsRepositoryLocal.get(url) ?: throw IllegalStateException("Article with URL \"$url\" could not be found")
+
+    fun getDetails(id: Int) = flowState(viewModelScope) {
+        newsRepositoryLocal.get(id) ?: throw IllegalStateException("Article with id \"$id\" could not be found")
     }
 
     fun getSummary(url: String) = flowState(viewModelScope) { summaryRepository.summarize(url) }
