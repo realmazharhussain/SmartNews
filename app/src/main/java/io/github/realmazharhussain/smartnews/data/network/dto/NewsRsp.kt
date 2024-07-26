@@ -45,7 +45,7 @@ data class Article (
     val content: String,
 
     @Json(ignore = true)
-    val id: Int = url.hashCode()
+    val id: Int = 0,
 ) {
     companion object {
         fun mock() = Article(
@@ -68,7 +68,6 @@ data class Source (
     val name: String
 ) {
     companion object {
-        val Unknown = Source(id = null, name = "Unknown")
         fun mock() = Source(id = "io.github.realmazharhussain.blog", name = "Mazhar's Blog")
     }
 }

@@ -2,7 +2,6 @@ package io.github.realmazharhussain.smartnews.ui.details
 
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -33,18 +35,31 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import io.github.realmazharhussain.smartnews.R
 import io.github.realmazharhussain.smartnews.common.TaskState
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
 import io.github.realmazharhussain.smartnews.extension.ui.sharedElement
-import io.github.realmazharhussain.smartnews.ui.common.SharedAnimationPreview
+import io.github.realmazharhussain.smartnews.ui.Screen
+import io.github.realmazharhussain.smartnews.ui.common.navigation.SharedTransitionPreview
 import retrofit2.HttpException
 import kotlin.random.Random
 import kotlin.random.nextInt
 
 @Composable
 fun DetailsScreen(
+    route: Screen.Details,
+    modifier: Modifier = Modifier,
+    viewModel: DetailsViewModel = hiltViewModel(),
+) {
+    val details by remember { viewModel.getDetails(route.articleId) }.collectAsState()
+    val summary by remember { viewModel.getSummary(route.articleUrl) }.collectAsState()
+    DetailsScreenContent(details, summary, modifier)
+}
+
+@Composable
+fun DetailsScreenContent(
     details: TaskState<Article>,
     summary: TaskState<String>,
     modifier: Modifier = Modifier
@@ -183,9 +198,8 @@ fun DetailsScreen(
 @Preview
 @Composable
 private fun DetailsScreenPreview() {
-    @OptIn(ExperimentalSharedTransitionApi::class)
-    SharedAnimationPreview {
-        DetailsScreen(TaskState.Success(Article.mock()), TaskState.Success(randomText()))
+    SharedTransitionPreview {
+        DetailsScreenContent(TaskState.Success(Article.mock()), TaskState.Success(randomText()))
     }
 }
 

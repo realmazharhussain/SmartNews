@@ -2,14 +2,13 @@ package io.github.realmazharhussain.smartnews.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
 import io.github.realmazharhussain.smartnews.data.database.dao.ArticleCacheDao
-import io.github.realmazharhussain.smartnews.data.database.dao.ArticleSourceDao
+import io.github.realmazharhussain.smartnews.data.database.dao.SummaryCacheDao
 import io.github.realmazharhussain.smartnews.data.database.entity.ArticleCache
-import io.github.realmazharhussain.smartnews.data.database.entity.ArticleSource
+import io.github.realmazharhussain.smartnews.data.database.entity.SummaryCache
 
-@Database(entities = [ArticleSource::class, ArticleCache::class], version = 2)
+@Database(entities = [ArticleCache::class, SummaryCache::class], version = 5)
 abstract class CacheDatabase : RoomDatabase() {
     abstract fun articleCacheDao(): ArticleCacheDao
-    abstract fun articleSourceDao(): ArticleSourceDao
+    abstract fun summaryCacheDao(): SummaryCacheDao
 }

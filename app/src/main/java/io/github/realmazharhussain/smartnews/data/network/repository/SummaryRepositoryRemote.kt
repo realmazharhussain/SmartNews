@@ -6,7 +6,7 @@ import io.github.realmazharhussain.smartnews.data.network.dto.SummaryReq.SourceT
 import io.github.realmazharhussain.smartnews.data.network.service.SummaryService
 import javax.inject.Inject
 
-class SummaryRepository @Inject constructor(private val service: SummaryService) {
+class SummaryRepositoryRemote @Inject constructor(private val service: SummaryService) {
     @Suppress("MemberVisibilityCanBePrivate")
     var apiKey = BuildConfig.AI21_API_KEY
     private val authorization get() = "Bearer $apiKey"

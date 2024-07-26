@@ -7,6 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.realmazharhussain.smartnews.data.database.CacheDatabase
 import io.github.realmazharhussain.smartnews.data.database.NewsRepositoryLocal
@@ -33,13 +34,13 @@ class NewsViewModel @Inject constructor(
     val everything = query.debounce(1000).flatMapLatest { query ->
         Pager(
             config = PagingConfig(20),
-            remoteMediator = NewsRemoteMediator(query, cacheDb, remoteRepository, localRepository)
+            remoteMediator = NewsRemoteMediator(query, remoteRepository, localRepository)
         ) {
             localRepository.pagingSource()
         }.flow.map { pagingData ->
             pagingData.filter { article ->
                 article.title != "[Removed]" && !article.url.startsWith("https://consent.yahoo.com/")
-            }
+            }.map { it.toArticle() }
         }
     }.cachedIn(viewModelScope)
 }

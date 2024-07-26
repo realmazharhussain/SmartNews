@@ -10,7 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.github.realmazharhussain.smartnews.data.database.CacheDatabase
 import io.github.realmazharhussain.smartnews.data.database.dao.ArticleCacheDao
-import io.github.realmazharhussain.smartnews.data.database.dao.ArticleSourceDao
+import io.github.realmazharhussain.smartnews.data.database.dao.SummaryCacheDao
 import io.github.realmazharhussain.smartnews.data.network.dto.NewsRspJsonAdapter
 import io.github.realmazharhussain.smartnews.data.network.service.NewsService
 import io.github.realmazharhussain.smartnews.data.network.service.SummaryService
@@ -38,5 +38,5 @@ object AppModule {
         Room.databaseBuilder(context, CacheDatabase::class.java, "cache_database").fallbackToDestructiveMigration().build()
 
     @Provides fun providesArticleCacheDao(db: CacheDatabase): ArticleCacheDao = db.articleCacheDao()
-    @Provides fun providesArticleSourceDao(db: CacheDatabase): ArticleSourceDao = db.articleSourceDao()
+    @Provides fun providesSummaryCacheDao(db: CacheDatabase): SummaryCacheDao = db.summaryCacheDao()
 }

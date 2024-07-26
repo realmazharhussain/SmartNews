@@ -1,6 +1,5 @@
 package io.github.realmazharhussain.smartnews.ui.home
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
 import io.github.realmazharhussain.smartnews.extension.ui.sharedElement
-import io.github.realmazharhussain.smartnews.ui.common.SharedAnimationPreview
+import io.github.realmazharhussain.smartnews.ui.common.navigation.SharedTransitionPreview
 
 @Composable
 fun NewsItem(
@@ -84,11 +83,10 @@ fun NewsItem(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun NewsItemPreview() {
-    SharedAnimationPreview {
+    SharedTransitionPreview {
         NewsItem(Article.mock(), onClick = {})
     }
 }
