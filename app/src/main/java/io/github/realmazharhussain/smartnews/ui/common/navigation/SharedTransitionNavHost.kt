@@ -8,20 +8,27 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun SharedTransitionNavHost(
-    navController: NavHostController,
     startDestination: Any,
     modifier: Modifier = Modifier,
-    builder: NavGraphBuilder.() -> Unit
+    navController: NavHostController = rememberNavController(),
+    builder: SharedTransitionNavGraphBuilder.() -> Unit
 ) {
     SharedTransitionLayout {
         CompositionLocalProvider(LocalSharedTransitionScope provides this) {
             NavHost(navController, startDestination, modifier) {
-                builder()
+                SharedTransitionNavGraphBuilder(this, navController).builder()
             }
         }
     }
 }
+
+class SharedTransitionNavGraphBuilder(
+    val builder: NavGraphBuilder,
+    val navController: NavHostController
+)
+
