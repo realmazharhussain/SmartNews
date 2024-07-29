@@ -1,8 +1,5 @@
 package io.github.realmazharhussain.smartnews.ui.home
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +37,7 @@ import io.github.realmazharhussain.smartnews.R
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
 import io.github.realmazharhussain.smartnews.extension.repeat
 import io.github.realmazharhussain.smartnews.ui.common.SmartNewsTopBar
-import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
+import io.github.realmazharhussain.smartnews.ui.common.navigation.SharedTransitionPreview
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -145,17 +142,12 @@ fun HomeScreenContent(
 
 @Preview
 @Composable
-@OptIn(ExperimentalSharedTransitionApi::class)
 private fun HomeScreenPreview() {
-    SmartNewsTheme {
-        SharedTransitionLayout {
-            AnimatedVisibility(visible = true) {
-                HomeScreenContent(
-                    items = flowOf(PagingData.from(Article.mock().repeat(20))).collectAsLazyPagingItems(),
-                    onArticleClicked = {},
-                )
-            }
-        }
+    SharedTransitionPreview {
+        HomeScreenContent(
+            items = flowOf(PagingData.from(Article.mock().repeat(20))).collectAsLazyPagingItems(),
+            onArticleClicked = {},
+        )
     }
 }
 

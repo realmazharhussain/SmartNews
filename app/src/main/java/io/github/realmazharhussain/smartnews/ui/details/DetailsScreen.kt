@@ -2,9 +2,7 @@ package io.github.realmazharhussain.smartnews.ui.details
 
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -47,7 +44,7 @@ import io.github.realmazharhussain.smartnews.data.network.dto.Article
 import io.github.realmazharhussain.smartnews.ui.Screen
 import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalAnimatedVisibilityScope
 import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalSharedTransitionScope
-import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
+import io.github.realmazharhussain.smartnews.ui.common.navigation.SharedTransitionPreview
 import retrofit2.HttpException
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -209,22 +206,12 @@ fun DetailsScreenContent(
 
 @Preview
 @Composable
-@OptIn(ExperimentalSharedTransitionApi::class)
 private fun DetailsScreenPreview() {
-    SmartNewsTheme {
-        SharedTransitionLayout {
-            AnimatedVisibility(visible = true) {
-                CompositionLocalProvider(
-                    LocalSharedTransitionScope provides this@SharedTransitionLayout,
-                    LocalAnimatedVisibilityScope provides this@AnimatedVisibility,
-                ) {
-                    DetailsScreenContent(
-                        details = TaskState.Success(Article.mock()),
-                        summary = TaskState.Success(randomText()),
-                    )
-                }
-            }
-        }
+    SharedTransitionPreview {
+        DetailsScreenContent(
+            details = TaskState.Success(Article.mock()),
+            summary = TaskState.Success(randomText()),
+        )
     }
 }
 

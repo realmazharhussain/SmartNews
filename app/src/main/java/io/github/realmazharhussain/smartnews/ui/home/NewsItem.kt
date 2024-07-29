@@ -1,8 +1,6 @@
 package io.github.realmazharhussain.smartnews.ui.home
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,7 +20,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -34,7 +31,7 @@ import coil.compose.AsyncImage
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
 import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalAnimatedVisibilityScope
 import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalSharedTransitionScope
-import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
+import io.github.realmazharhussain.smartnews.ui.common.navigation.SharedTransitionPreview
 
 @Composable
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -94,18 +91,8 @@ fun NewsItem(
 
 @Preview
 @Composable
-@OptIn(ExperimentalSharedTransitionApi::class)
 private fun NewsItemPreview() {
-    SmartNewsTheme {
-        SharedTransitionLayout {
-            AnimatedVisibility(visible = true) {
-                CompositionLocalProvider(
-                    LocalSharedTransitionScope provides this@SharedTransitionLayout,
-                    LocalAnimatedVisibilityScope provides this@AnimatedVisibility
-                ) {
-                    NewsItem(Article.mock(), onClick = {})
-                }
-            }
-        }
+    SharedTransitionPreview {
+        NewsItem(Article.mock(), onClick = {})
     }
 }
