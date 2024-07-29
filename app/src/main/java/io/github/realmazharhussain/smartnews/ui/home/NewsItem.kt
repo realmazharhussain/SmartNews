@@ -1,5 +1,10 @@
 package io.github.realmazharhussain.smartnews.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,11 +36,14 @@ import io.github.realmazharhussain.smartnews.data.network.dto.Article
 import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 
 @Composable
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun NewsItem(
     article: Article,
     onClick: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier
-) {
+) = with(sharedTransitionScope) {
     Card(
         onClick = onClick,
         modifier = modifier,
@@ -53,6 +61,7 @@ fun NewsItem(
                 error = rememberVectorPainter(Icons.Default.BrokenImage),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
+                    .sharedElement(rememberSharedContentState("image-${article.id}"), animatedVisibilityScope)
                     .clip(RoundedCornerShape(12))
                     .size(60.dp)
             )
@@ -66,6 +75,7 @@ fun NewsItem(
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.sharedElement(rememberSharedContentState("title-${article.id}"), animatedVisibilityScope),
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -73,6 +83,7 @@ fun NewsItem(
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.sharedElement(rememberSharedContentState("source-${article.id}"), animatedVisibilityScope),
                 )
             }
         }
@@ -81,8 +92,18 @@ fun NewsItem(
 
 @Preview
 @Composable
+@OptIn(ExperimentalSharedTransitionApi::class)
 private fun NewsItemPreview() {
     SmartNewsTheme {
-        NewsItem(Article.mock(), onClick = {})
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                NewsItem(
+                    article = Article.mock(),
+                    onClick = {},
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this@AnimatedVisibility
+                )
+            }
+        }
     }
 }

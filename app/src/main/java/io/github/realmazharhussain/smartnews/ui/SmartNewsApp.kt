@@ -1,5 +1,7 @@
 package io.github.realmazharhussain.smartnews.ui
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,10 +17,25 @@ sealed interface Screen {
 }
 
 @Composable
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun SmartNewsApp() {
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.Home) {
-        composable<Screen.Home> { HomeScreen(onArticleClicked = { navController.navigate(Screen.Details(it.id, it.url)) }) }
-        composable<Screen.Details> { DetailsScreen(it.toRoute()) }
+    SharedTransitionLayout {
+        val navController = rememberNavController()
+        NavHost(navController = navController, startDestination = Screen.Home) {
+            composable<Screen.Home> {
+                HomeScreen(
+                    onArticleClicked = { navController.navigate(Screen.Details(it.id, it.url)) },
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this@composable,
+                )
+            }
+            composable<Screen.Details> {
+                DetailsScreen(
+                    route = it.toRoute(),
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this@composable,
+                )
+            }
+        }
     }
 }
