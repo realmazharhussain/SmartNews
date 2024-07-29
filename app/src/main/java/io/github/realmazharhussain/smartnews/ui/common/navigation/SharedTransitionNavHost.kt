@@ -5,9 +5,11 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 @Composable
@@ -32,3 +34,10 @@ class SharedTransitionNavGraphBuilder(
     val navController: NavHostController
 )
 
+inline fun <reified T : Any> SharedTransitionNavGraphBuilder.composable(
+    noinline content: @Composable (NavBackStackEntry) -> Unit
+) = builder.composable<T> {
+    CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
+        content(it)
+    }
+}

@@ -1,11 +1,9 @@
 package io.github.realmazharhussain.smartnews.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalAnimatedVisibilityScope
 import io.github.realmazharhussain.smartnews.ui.common.navigation.SharedTransitionNavHost
+import io.github.realmazharhussain.smartnews.ui.common.navigation.composable
 import io.github.realmazharhussain.smartnews.ui.details.DetailsScreen
 import io.github.realmazharhussain.smartnews.ui.home.HomeScreen
 import kotlinx.serialization.Serializable
@@ -18,16 +16,7 @@ sealed interface Screen {
 @Composable
 fun SmartNewsApp() {
     SharedTransitionNavHost(startDestination = Screen.Home) {
-        builder.composable<Screen.Home> {
-            CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
-                HomeScreen(onArticleClicked = { navController.navigate(Screen.Details(it.id, it.url)) })
-            }
-        }
-
-        builder.composable<Screen.Details> {
-            CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
-                DetailsScreen(route = it.toRoute())
-            }
-        }
+        composable<Screen.Home> { HomeScreen(onArticleClicked = { navController.navigate(Screen.Details(it.id, it.url)) }) }
+        composable<Screen.Details> { DetailsScreen(route = it.toRoute()) }
     }
 }
