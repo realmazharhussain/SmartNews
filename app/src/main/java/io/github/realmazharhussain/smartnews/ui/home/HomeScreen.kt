@@ -1,10 +1,8 @@
 package io.github.realmazharhussain.smartnews.ui.home
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,30 +44,23 @@ import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-@OptIn(ExperimentalSharedTransitionApi::class)
 fun HomeScreen(
     onArticleClicked: (Article) -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     viewModel: NewsViewModel = hiltViewModel()
 ) {
     HomeScreenContent(
         items = viewModel.everything.collectAsLazyPagingItems(),
         onArticleClicked = onArticleClicked,
-        sharedTransitionScope = sharedTransitionScope,
-        animatedVisibilityScope = animatedVisibilityScope,
         modifier = modifier
     )
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreenContent(
     items: LazyPagingItems<Article>,
     onArticleClicked: (Article) -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
@@ -134,8 +125,6 @@ fun HomeScreenContent(
                                 NewsItem(
                                     article = article,
                                     onClick = { onArticleClicked(article) },
-                                    sharedTransitionScope = sharedTransitionScope,
-                                    animatedVisibilityScope = animatedVisibilityScope,
                                 )
                             }
 
@@ -164,8 +153,6 @@ private fun HomeScreenPreview() {
                 HomeScreenContent(
                     items = flowOf(PagingData.from(Article.mock().repeat(20))).collectAsLazyPagingItems(),
                     onArticleClicked = {},
-                    sharedTransitionScope =this@SharedTransitionLayout,
-                    animatedVisibilityScope =this@AnimatedVisibility,
                 )
             }
         }

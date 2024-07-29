@@ -3,10 +3,8 @@ package io.github.realmazharhussain.smartnews.ui.details
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -46,23 +45,22 @@ import io.github.realmazharhussain.smartnews.R
 import io.github.realmazharhussain.smartnews.common.TaskState
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
 import io.github.realmazharhussain.smartnews.ui.Screen
+import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalAnimatedVisibilityScope
+import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalSharedTransitionScope
 import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 import retrofit2.HttpException
 import kotlin.random.Random
 import kotlin.random.nextInt
 
 @Composable
-@OptIn(ExperimentalSharedTransitionApi::class)
 fun DetailsScreen(
     route: Screen.Details,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     viewModel: DetailsViewModel = hiltViewModel(),
 ) {
     val details by remember { viewModel.getDetails(route.articleId) }.collectAsState()
     val summary by remember { viewModel.getSummary(route.articleUrl) }.collectAsState()
-    DetailsScreenContent(details, summary, sharedTransitionScope, animatedVisibilityScope, modifier)
+    DetailsScreenContent(details, summary, modifier)
 }
 
 @Composable
@@ -70,10 +68,8 @@ fun DetailsScreen(
 fun DetailsScreenContent(
     details: TaskState<Article>,
     summary: TaskState<String>,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier
-) = with(sharedTransitionScope) {
+) = with(LocalSharedTransitionScope.current) {
     Scaffold(modifier) { innerPadding ->
         if (details !is TaskState.Success) {
             Box(
@@ -111,7 +107,7 @@ fun DetailsScreenContent(
                 modifier = Modifier
                     .sharedElement(
                         rememberSharedContentState("image-${article.id}"),
-                        animatedVisibilityScope
+                        LocalAnimatedVisibilityScope.current
                     )
                     .fillMaxWidth()
                     .animateContentSize()
@@ -136,14 +132,14 @@ fun DetailsScreenContent(
                         text = article.title,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.sharedElement(rememberSharedContentState("title-${article.id}"), animatedVisibilityScope),
+                        modifier = Modifier.sharedElement(rememberSharedContentState("title-${article.id}"), LocalAnimatedVisibilityScope.current),
                     )
 
                     Text(
                         text = "${article.author?.plus(" - ") ?: ""}${article.source.name}",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier.sharedElement(rememberSharedContentState("source-${article.id}"), animatedVisibilityScope),
+                        modifier = Modifier.sharedElement(rememberSharedContentState("source-${article.id}"), LocalAnimatedVisibilityScope.current),
                     )
 
                     Spacer(modifier = Modifier.height(0.dp))
@@ -218,12 +214,15 @@ private fun DetailsScreenPreview() {
     SmartNewsTheme {
         SharedTransitionLayout {
             AnimatedVisibility(visible = true) {
-                DetailsScreenContent(
-                    details = TaskState.Success(Article.mock()),
-                    summary = TaskState.Success(randomText()),
-                    sharedTransitionScope =this@SharedTransitionLayout,
-                    animatedVisibilityScope =this@AnimatedVisibility,
-                )
+                CompositionLocalProvider(
+                    LocalSharedTransitionScope provides this@SharedTransitionLayout,
+                    LocalAnimatedVisibilityScope provides this@AnimatedVisibility,
+                ) {
+                    DetailsScreenContent(
+                        details = TaskState.Success(Article.mock()),
+                        summary = TaskState.Success(randomText()),
+                    )
+                }
             }
         }
     }

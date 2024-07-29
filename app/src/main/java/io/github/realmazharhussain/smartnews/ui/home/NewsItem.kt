@@ -1,10 +1,8 @@
 package io.github.realmazharhussain.smartnews.ui.home
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +22,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -33,6 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
+import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalAnimatedVisibilityScope
+import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalSharedTransitionScope
 import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 
 @Composable
@@ -40,10 +41,8 @@ import io.github.realmazharhussain.smartnews.ui.theme.SmartNewsTheme
 fun NewsItem(
     article: Article,
     onClick: () -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier
-) = with(sharedTransitionScope) {
+) = with(LocalSharedTransitionScope.current) {
     Card(
         onClick = onClick,
         modifier = modifier,
@@ -61,7 +60,10 @@ fun NewsItem(
                 error = rememberVectorPainter(Icons.Default.BrokenImage),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .sharedElement(rememberSharedContentState("image-${article.id}"), animatedVisibilityScope)
+                    .sharedElement(
+                        rememberSharedContentState("image-${article.id}"),
+                        LocalAnimatedVisibilityScope.current
+                    )
                     .clip(RoundedCornerShape(12))
                     .size(60.dp)
             )
@@ -75,7 +77,7 @@ fun NewsItem(
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.sharedElement(rememberSharedContentState("title-${article.id}"), animatedVisibilityScope),
+                    modifier = Modifier.sharedElement(rememberSharedContentState("title-${article.id}"), LocalAnimatedVisibilityScope.current),
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -83,7 +85,7 @@ fun NewsItem(
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.sharedElement(rememberSharedContentState("source-${article.id}"), animatedVisibilityScope),
+                    modifier = Modifier.sharedElement(rememberSharedContentState("source-${article.id}"), LocalAnimatedVisibilityScope.current),
                 )
             }
         }
@@ -97,12 +99,12 @@ private fun NewsItemPreview() {
     SmartNewsTheme {
         SharedTransitionLayout {
             AnimatedVisibility(visible = true) {
-                NewsItem(
-                    article = Article.mock(),
-                    onClick = {},
-                    sharedTransitionScope = this@SharedTransitionLayout,
-                    animatedVisibilityScope = this@AnimatedVisibility
-                )
+                CompositionLocalProvider(
+                    LocalSharedTransitionScope provides this@SharedTransitionLayout,
+                    LocalAnimatedVisibilityScope provides this@AnimatedVisibility
+                ) {
+                    NewsItem(Article.mock(), onClick = {})
+                }
             }
         }
     }
