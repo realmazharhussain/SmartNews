@@ -1,6 +1,5 @@
 package io.github.realmazharhussain.smartnews.ui.home
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,17 +28,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
-import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalAnimatedVisibilityScope
-import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalSharedTransitionScope
+import io.github.realmazharhussain.smartnews.extension.ui.sharedElement
 import io.github.realmazharhussain.smartnews.ui.common.navigation.SharedTransitionPreview
 
 @Composable
-@OptIn(ExperimentalSharedTransitionApi::class)
 fun NewsItem(
     article: Article,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
-) = with(LocalSharedTransitionScope.current) {
+) {
     Card(
         onClick = onClick,
         modifier = modifier,
@@ -57,10 +54,7 @@ fun NewsItem(
                 error = rememberVectorPainter(Icons.Default.BrokenImage),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .sharedElement(
-                        rememberSharedContentState("image-${article.id}"),
-                        LocalAnimatedVisibilityScope.current
-                    )
+                    .sharedElement(key = "image-${article.id}")
                     .clip(RoundedCornerShape(12))
                     .size(60.dp)
             )
@@ -74,7 +68,7 @@ fun NewsItem(
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.sharedElement(rememberSharedContentState("title-${article.id}"), LocalAnimatedVisibilityScope.current),
+                    modifier = Modifier.sharedElement(key = "title-${article.id}"),
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -82,7 +76,7 @@ fun NewsItem(
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.sharedElement(rememberSharedContentState("source-${article.id}"), LocalAnimatedVisibilityScope.current),
+                    modifier = Modifier.sharedElement(key = "source-${article.id}"),
                 )
             }
         }

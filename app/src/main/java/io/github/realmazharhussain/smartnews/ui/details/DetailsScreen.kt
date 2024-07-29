@@ -2,7 +2,6 @@ package io.github.realmazharhussain.smartnews.ui.details
 
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,9 +40,8 @@ import coil.compose.AsyncImage
 import io.github.realmazharhussain.smartnews.R
 import io.github.realmazharhussain.smartnews.common.TaskState
 import io.github.realmazharhussain.smartnews.data.network.dto.Article
+import io.github.realmazharhussain.smartnews.extension.ui.sharedElement
 import io.github.realmazharhussain.smartnews.ui.Screen
-import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalAnimatedVisibilityScope
-import io.github.realmazharhussain.smartnews.ui.common.navigation.LocalSharedTransitionScope
 import io.github.realmazharhussain.smartnews.ui.common.navigation.SharedTransitionPreview
 import retrofit2.HttpException
 import kotlin.random.Random
@@ -61,12 +59,11 @@ fun DetailsScreen(
 }
 
 @Composable
-@OptIn(ExperimentalSharedTransitionApi::class)
 fun DetailsScreenContent(
     details: TaskState<Article>,
     summary: TaskState<String>,
     modifier: Modifier = Modifier
-) = with(LocalSharedTransitionScope.current) {
+) {
     Scaffold(modifier) { innerPadding ->
         if (details !is TaskState.Success) {
             Box(
@@ -102,10 +99,7 @@ fun DetailsScreenContent(
                 placeholder = painterResource(R.drawable.downloading_16x9),
                 error = rememberVectorPainter(Icons.Default.BrokenImage),
                 modifier = Modifier
-                    .sharedElement(
-                        rememberSharedContentState("image-${article.id}"),
-                        LocalAnimatedVisibilityScope.current
-                    )
+                    .sharedElement(key = "image-${article.id}")
                     .fillMaxWidth()
                     .animateContentSize()
             )
@@ -129,14 +123,14 @@ fun DetailsScreenContent(
                         text = article.title,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.sharedElement(rememberSharedContentState("title-${article.id}"), LocalAnimatedVisibilityScope.current),
+                        modifier = Modifier.sharedElement(key = "title-${article.id}"),
                     )
 
                     Text(
                         text = "${article.author?.plus(" - ") ?: ""}${article.source.name}",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier.sharedElement(rememberSharedContentState("source-${article.id}"), LocalAnimatedVisibilityScope.current),
+                        modifier = Modifier.sharedElement(key = "source-${article.id}"),
                     )
 
                     Spacer(modifier = Modifier.height(0.dp))
