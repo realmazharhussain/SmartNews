@@ -5,12 +5,12 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 
 @Composable
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -32,12 +32,14 @@ fun SharedTransitionNavHost(
 class SharedTransitionNavGraphBuilder(
     val builder: NavGraphBuilder,
     val navController: NavHostController
-)
+) {
+    class DestinationScope<out T : Any>(val route: T)
+}
 
 inline fun <reified T : Any> SharedTransitionNavGraphBuilder.composable(
-    noinline content: @Composable (NavBackStackEntry) -> Unit
+    noinline content: @Composable SharedTransitionNavGraphBuilder.DestinationScope<T>.() -> Unit
 ) = builder.composable<T> {
     CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
-        content(it)
+        SharedTransitionNavGraphBuilder.DestinationScope(it.toRoute<T>()).content()
     }
 }
